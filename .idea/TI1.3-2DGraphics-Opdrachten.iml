@@ -11,5 +11,7 @@
     <orderEntry type="library" name="openjfx.javafx.graphics" level="project" />
     <orderEntry type="library" name="openjfx.javafx.media" level="project" />
     <orderEntry type="library" name="openjfx.javafx.swing" level="project" />
+    <orderEntry type="library" name="fxgraphics2d-1.10" level="project" />
+    <orderEntry type="library" name="jfree.fxgraphics2d2" level="project" />
   </component>
 </module>

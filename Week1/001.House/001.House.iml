@@ -9,5 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="src" level="project" />
+    <orderEntry type="library" name="jfree.fxgraphics2d1" level="project" />
+    <orderEntry type="library" name="jfree.fxgraphics2d2" level="project" />
   </component>
 </module>
