@@ -17,10 +17,14 @@ public class Spirograph extends Application {
     private TextField v3;
     private TextField v4;
     private Canvas canvas;
+    private boolean initialize = true;
+    // Change screen size
+    private int screenWidth = 1920;
+    private int screenHeight = 1080;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        canvas = new Canvas(1920, 1080);
+        this.canvas = new Canvas(1920, 1080);
        
         VBox mainBox = new VBox();
         HBox topBar = new HBox();
@@ -49,8 +53,14 @@ public class Spirograph extends Application {
         //feel free to add more textfields or other controls if needed, but beware that swing components might clash in naming
 
         // Start
-        graphics.translate(this.canvas.getWidth()/2 ,this.canvas.getHeight()/2);
-        graphics.scale(1, -1);
+        if (this.initialize){
+            graphics.translate(this.screenWidth/2 ,this.screenHeight/2);
+            graphics.scale(1, -1);
+            this.initialize = false;
+        }
+        // Clear canvas
+        this.canvas.getGraphicsContext2D().clearRect(-(this.screenWidth/2), -(this.screenHeight/2), this.screenWidth, this.screenHeight);
+
         // Grafiek
         // Waardes: 1: a, 2: b, 3: c, 4: d
         double x1 = Double.parseDouble(v1.getText()) * Math.cos(Double.parseDouble(v2.getText())) + Double.parseDouble(v3.getText()) * Math.cos(Double.parseDouble(v4.getText()));
@@ -65,36 +75,6 @@ public class Spirograph extends Application {
             x1 = x2;
             y1 = y2;
         }
-
-//        // 1: Length, 2: 2nd Length, 3: , 4: Radius
-//        double text1 = Double.parseDouble(v1.getText());
-//        double text2 = Double.parseDouble(v2.getText());
-//        double text3 = Double.parseDouble(v3.getText());
-//        double text4 = Double.parseDouble(v4.getText());
-//
-//        double radiusBinnen = 2*text4;
-//        double radiusBuiten = text4;
-//        for (int i = 0; i < text1; i++){
-//            double hoek = (float) (i/Math.PI);
-//            double x1 = radiusBinnen * Math.cos(hoek);
-//            double y1 = radiusBinnen * Math.sin(hoek);
-//            double x2 = radiusBuiten * Math.cos(hoek);
-//            double y2 = radiusBuiten * Math.sin(hoek);
-//
-//            graphics.setColor(Color.getHSBColor(5, 1, 1));
-//            graphics.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
-//            for (int j = 0; j < text2; j++){
-//                double hoek2 = (float) (i/Math.PI);
-//                double x3 = radiusBinnen * Math.cos(hoek2);
-//                double y3 = radiusBinnen * Math.sin(hoek2);
-//                double x4 = radiusBuiten * Math.cos(hoek2);
-//                double y4 = radiusBuiten * Math.sin(hoek2);
-//
-//                graphics.setColor(Color.getHSBColor(200, 1, 1));
-//                graphics.drawLine((int) x3, (int) y3, (int) x4, (int) y4);
-//            }
-//        }
-
     }
     
     

@@ -27,7 +27,7 @@ public class Rainbow extends Application {
         // Grafiek
         double radiusBinnen = 500;
         double radiusBuiten = 400;
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 10000; i++){
             double hoek = (float) (i/3141.5f); // i/PHI
             double x1 = radiusBinnen * Math.cos(hoek);
             double y1 = radiusBinnen * Math.sin(hoek);

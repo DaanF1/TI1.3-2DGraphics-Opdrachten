@@ -30,8 +30,7 @@ public class Graph extends Application {
         double scale = 50.0;
         double lastY = Math.sin(-10);
 
-        for(double x = -10; x < 10; x += resolution)
-        {
+        for (double x = -10; x < 10; x += resolution){
             float y = (float)Math.pow(x,3);
             graphics.draw(new Line2D.Double(x*scale, y*scale, (x-resolution)*scale, lastY*scale));
             lastY = y;

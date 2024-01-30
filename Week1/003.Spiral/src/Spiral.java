@@ -32,8 +32,7 @@ public class Spiral extends Application {
         double lastX = 0;
         double n = 0.1;
 
-        for(double angle = 0; angle < 20 * Math.PI; angle+=0.1)
-        {
+        for (double angle = 0; angle < 20 * Math.PI; angle+=0.1){
             double radius = n * angle;
             double x = radius * Math.cos(angle);
             double y = radius * Math.sin(angle);
