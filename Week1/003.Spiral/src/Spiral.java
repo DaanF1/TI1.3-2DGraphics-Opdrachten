@@ -25,17 +25,17 @@ public class Spiral extends Application {
         graphics.translate(this.canvas.getWidth()/2 ,this.canvas.getHeight()/2);
         graphics.scale(1, -1);
         graphics.setColor(new Color(1,1,1));
+
         // Grafiek
-        double resolution = 0.1;
-        double scale = 50.0;
+        double scale = 5.0;
         double lastY = 0;
         double lastX = 0;
-        double n = 0.1;
+        double n = 1;
 
-        for (double angle = 0; angle < 20 * Math.PI; angle+=0.1){
-            double radius = n * angle;
-            double x = radius * Math.cos(angle);
-            double y = radius * Math.sin(angle);
+        for (double i = 0; i < 100; i += 0.1){ // Waarbij 100 = lengte van spiraal
+            double radius = n * i;
+            double x = radius * Math.cos(i);
+            double y = radius * Math.sin(i);
 
             graphics.draw(new Line2D.Double(lastX*scale, lastY*scale, x*scale, y*scale));
             lastX = x;
