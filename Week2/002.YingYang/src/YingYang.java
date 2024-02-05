@@ -33,6 +33,27 @@ public class YingYang extends Application {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+        graphics.translate(canvas.getWidth()/2, canvas.getHeight()/2);
+        graphics.scale(1, -1);
+
+        Shape cirkel = new Ellipse2D.Double(-100, -100, 200,200);
+        Shape binnenCirkel1 = new Ellipse2D.Double(-15, 35, 30, 30);
+        Shape binnenCirkel2 = new Ellipse2D.Double(-15, -65, 30, 30);
+
+        GeneralPath path = new GeneralPath();
+        path.moveTo(0,100);
+        path.curveTo(135, 95, 135, -95, 0, -100);
+        path.curveTo(-65, -95, -65, -5, 0, 0);
+        path.curveTo(65,5,65,95,0, 100);
+        path.closePath();
+
+        graphics.setColor(Color.black);
+        graphics.draw(cirkel);
+        graphics.fill(path);
+        graphics.fill(binnenCirkel1);
+        graphics.setColor(Color.white);
+        graphics.fill(binnenCirkel2);
+        graphics.setColor(Color.black);
     }
 
 
