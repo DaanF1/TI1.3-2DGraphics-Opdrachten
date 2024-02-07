@@ -31,14 +31,11 @@ public class SecretBox extends Application{
         graphics.translate(canvas.getWidth()/2, canvas.getHeight()/2);
         graphics.scale(1, -1);
 
-        for (int j = 0; j < 13; j++){
-            Color color = new Color(j, j*2, j*3);
-            for (int i = 0; i < 13; i++){
-                Rectangle2D rectangle = new Rectangle2D.Double();
-                rectangle.setRect(i, i + 50, 50, 50);
-                graphics.setColor(color);
-                graphics.fill(rectangle);
-            }
+        // Maak box
+        for (int i = 0; i < 13; i++){
+            Rectangle2D rectangle = new Rectangle2D.Double();
+            rectangle.setRect(i, i + 50, 50, 50);
+            graphics.fill(rectangle);
         }
     }
 
