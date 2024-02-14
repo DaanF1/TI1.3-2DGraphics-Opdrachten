@@ -63,11 +63,11 @@ public class GradientPaintExercise extends Application {
 
             focusPoint = new Point2D.Float(0, 0);
             radius = 200;
-            fractions[0] = 0.1F;
+            fractions[0] = 0.5F;
             fractions[1] = 0.6F;
             fractions[2] = 1F;
-            colors[0] = Color.RED;
-            colors[1] = Color.WHITE;
+            colors[0] = Color.YELLOW;
+            colors[1] = Color.ORANGE;
             colors[2] = Color.BLUE;
 
             this.paint =
