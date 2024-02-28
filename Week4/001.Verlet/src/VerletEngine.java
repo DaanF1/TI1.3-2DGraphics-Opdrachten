@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -96,9 +96,20 @@ public class VerletEngine extends Application {
         Particle nearest = getNearest(mousePosition);
         Particle newParticle = new Particle(mousePosition);
         particles.add(newParticle);
-        constraints.add(new DistanceConstraint(newParticle, nearest));
 
-        if (e.getButton() == MouseButton.SECONDARY) {
+        if (e.getButton() == MouseButton.PRIMARY){
+            // 1 Constraint
+            if (!e.isControlDown() && !e.isShiftDown()){
+                constraints.add(new DistanceConstraint(newParticle, nearest));
+            } else if (e.isControlDown() && !e.isShiftDown()){
+                // Static constraint
+                constraints.add(new PositionConstraint(newParticle));
+            } else if (e.isShiftDown() && !e.isControlDown()){
+                // Rope constraint
+                constraints.add(new RopeConstraint(newParticle, nearest));
+            }
+        } else if (e.getButton() == MouseButton.SECONDARY) {
+            // 2 Constraints
             ArrayList<Particle> sorted = new ArrayList<>();
             sorted.addAll(particles);
 
@@ -110,8 +121,20 @@ public class VerletEngine extends Application {
                 }
             });
 
-            constraints.add(new DistanceConstraint(newParticle, sorted.get(2)));
-        } else if (e.getButton() == MouseButton.MIDDLE) {
+            if (!e.isControlDown() && !e.isShiftDown()){
+                // Eigen afstanden
+                constraints.add(new DistanceConstraint(newParticle, nearest));
+                constraints.add(new DistanceConstraint(newParticle, sorted.get(2)));
+            }else if (e.isControlDown() && !e.isShiftDown()){
+                // Vaste afstanden (100)
+                constraints.add(new DistanceConstraint(newParticle, nearest, 100));
+                constraints.add(new DistanceConstraint(newParticle, sorted.get(2), 100));
+            } else if (e.isShiftDown() && !e.isControlDown()){
+                // 2 Dichtsbijzijnste punten
+                particles.remove(newParticle);
+                constraints.add(new DistanceConstraint(nearest, sorted.get(2)));
+            }
+        } else if (e.getButton() == MouseButton.MIDDLE){
             // Reset
             particles.clear();
             constraints.clear();
