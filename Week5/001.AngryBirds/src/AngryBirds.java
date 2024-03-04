@@ -1,6 +1,8 @@
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -9,10 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.World;
-import org.dyn4j.geometry.Vector2;
+import org.dyn4j.geometry.*;
+import org.dyn4j.geometry.Rectangle;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+
+import javax.imageio.ImageIO;
 
 public class AngryBirds extends Application {
 
@@ -22,9 +29,11 @@ public class AngryBirds extends Application {
     private Camera camera;
     private boolean debugSelected = false;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private BufferedImage backgroundImage;
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.backgroundImage = ImageIO.read(getClass().getResource("/background.png"));
 
         BorderPane mainPane = new BorderPane();
 
@@ -63,14 +72,41 @@ public class AngryBirds extends Application {
     }
 
     public void init() {
+        // World
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
+
+        // Body's
+        Body ground = new Body();
+        BodyFixture groundFixture = new BodyFixture(Geometry.createRectangle(27, 2));
+        //groundFixture.setFriction(100.0);
+        ground.addFixture(groundFixture);
+        Vector2 groundVector = new Vector2(0, -3);
+        ground.getTransform().setTranslation(groundVector);
+        ground.setMass(MassType.INFINITE);
+        this.world.addBody(ground);
+        GameObject groundObject = new GameObject("/ground.png", ground, groundVector.add(0, -75), 0.3);
+        this.gameObjects.add(groundObject);
+
+        Body red = new Body();
+        BodyFixture redFixture = new BodyFixture(Geometry.createCircle(0.2));
+        redFixture.setRestitution(0.5);
+        red.addFixture(redFixture);
+        Vector2 redVector = new Vector2(0, 0);
+        red.getTransform().setTranslation(redVector);
+        red.setMass(MassType.NORMAL);
+        this.world.addBody(red);
+        GameObject redObject = new GameObject("/birds/red.png", red, redVector.add(-70, -65), 0.05);
+        this.gameObjects.add(redObject);
+
     }
 
     public void draw(FXGraphics2D graphics) {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+        graphics.drawImage(this.backgroundImage, 0, 0, null);
+
 
         AffineTransform originalTransform = graphics.getTransform();
 
