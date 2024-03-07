@@ -11,14 +11,14 @@ public class Moon{
     private float angle;
     private double xOffset = 0;
     private double yOffset = 0;
-    private boolean rotateClockWise;
+    private boolean rotateCounterClockWise;
 
-    public Moon(String moonName, BufferedImage image, double scale, int distanceToPlanet, float startingAngle, boolean rotateClockWise){
+    public Moon(String moonName, BufferedImage image, double scale, int distanceToPlanet, float startingAngle, boolean rotateCounterClockWise){
         this.moonName = moonName;
         this.image = scaleImage(image, scale);
         this.distanceToPlanet = distanceToPlanet;
         this.angle = startingAngle;
-        this.rotateClockWise = rotateClockWise;
+        this.rotateCounterClockWise = rotateCounterClockWise;
     }
 
     // Scale image to its desired size
@@ -61,8 +61,8 @@ public class Moon{
         return this.yOffset;
     }
 
-    public boolean getRotationClockWise(){
-        return !this.rotateClockWise;
+    public boolean isRotatingCounterClockWise(){
+        return !this.rotateCounterClockWise;
     }
 
 }

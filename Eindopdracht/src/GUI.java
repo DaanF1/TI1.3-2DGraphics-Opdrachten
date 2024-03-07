@@ -4,10 +4,13 @@ import Components.SolarSystem;
 import Components.Sun;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.scene.Camera;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
@@ -15,18 +18,19 @@ import org.jfree.fx.ResizableCanvas;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 public class GUI extends Application{
+    // Controls:
+    // Linkermuisknop: Zoom in
+    // Rechtermuisknop: Zoom uit
+    // Scrollknop: Sleep rond
     private ResizableCanvas canvas;
     private SolarSystem solarSystem;
     private double zoom = 1;
-    // Extra: Pan Event
-    private Camera camera;
     private Point2D mousePoint;
-
     @Override
     public void start(Stage stage) throws Exception{
         // Zon aanmaken met zonnenstelsel
@@ -36,30 +40,42 @@ public class GUI extends Application{
         // Planeten met hun manen toevoegen aan zonnenstelsel
         this.solarSystem.addPlanet(new Planet("Mercury", ImageIO.read(getClass().getResource("/planets/mercurius.jpg")), 0.05, 150, (float) 1));
 
-        this.solarSystem.addPlanet(new Planet("Venus", ImageIO.read(getClass().getResource("/planets/venus.jpg")), 0.03, 300, (float) 2.5));
+        this.solarSystem.addPlanet(new Planet("Venus", ImageIO.read(getClass().getResource("/planets/venus.jpg")), 0.03, 250, (float) 2.5));
 
-        Planet earth = new Planet("Earth", ImageIO.read(getClass().getResource("/planets/aarde.jpg")), 0.015, 600, (float) 3);
-        earth.addMoon(new Moon("Luna", ImageIO.read(getClass().getResource("/planets/maanen/aarde_maan.jpeg")), 0.005, 50, (float) 2, false));
+        Planet earth = new Planet("Earth", ImageIO.read(getClass().getResource("/planets/aarde.jpg")), 0.015, 400, (float) 3);
+        earth.addMoon(new Moon("Luna", ImageIO.read(getClass().getResource("/planets/manen/aarde_maan.jpeg")), 0.005, 50, (float) 2, false));
         this.solarSystem.addPlanet(earth);
 
-        this.solarSystem.addPlanet(new Planet("Mars", ImageIO.read(getClass().getResource("/planets/mars.jpg")), 0.015, 900, (float) 2));
+        this.solarSystem.addPlanet(new Planet("Mars", ImageIO.read(getClass().getResource("/planets/mars.jpg")), 0.015, 550, (float) 2));
 
-        Planet jupiter = new Planet("Jupiter", ImageIO.read(getClass().getResource("/planets/jupiter.jpg")), 0.25, 1200, (float) 4);
-        jupiter.addMoon(new Moon("Io", ImageIO.read(getClass().getResource("/planets/maanen/jupiter_Io.jpg")), 0.05, 65, (float) 2, true));
-        jupiter.addMoon(new Moon("Europa", ImageIO.read(getClass().getResource("/planets/maanen/jupiter_europa.jpg")), 0.05, 120, (float) 3, true));
+        Planet jupiter = new Planet("Jupiter", ImageIO.read(getClass().getResource("/planets/jupiter.jpg")), 0.25, 1050, (float) 4);
+        jupiter.addMoon(new Moon("Io", ImageIO.read(getClass().getResource("/planets/manen/jupiter_Io.jpg")), 0.04, 65, (float) 2, false));
+        jupiter.addMoon(new Moon("Europa", ImageIO.read(getClass().getResource("/planets/manen/jupiter_europa.jpg")), 0.03, 120, (float) 3, false));
+        jupiter.addMoon(new Moon("Ganymedes", ImageIO.read(getClass().getResource("/planets/manen/jupiter_ganymedes.jpg")), 0.05, 185, (float) 3, false));
+        jupiter.addMoon(new Moon("Callisto", ImageIO.read(getClass().getResource("/planets/manen/jupiter_callisto.jpg")), 0.03, 250, (float) 3, false));
         this.solarSystem.addPlanet(jupiter);
 
         Planet saturn = new Planet("Saturn", ImageIO.read(getClass().getResource("/planets/saturnus.jpg")), 0.3, 1600, (float) 4.5);
-        saturn.addMoon(new Moon("Titan", ImageIO.read(getClass().getResource("/planets/maanen/saturnus_titan.jpg")), 0.1, 125, (float) 0.5, true));
+        saturn.addMoon(new Moon("Rhea", ImageIO.read(getClass().getResource("/planets/manen/saturnus_rhea.jfif")), 0.05, 115, (float) 2.5, false));
+        saturn.addMoon(new Moon("Titan", ImageIO.read(getClass().getResource("/planets/manen/saturnus_titan.jpg")), 0.1, 200, (float) 0.5, false));
         this.solarSystem.addPlanet(saturn);
 
-        this.solarSystem.addPlanet(new Planet("Uranus", ImageIO.read(getClass().getResource("/planets/uranus.jfif")), 0.2, 2000, (float) 1));
+        Planet uranus = new Planet("Uranus", ImageIO.read(getClass().getResource("/planets/uranus.jfif")), 0.2, 2000, (float) 1);
+        uranus.addMoon(new Moon("Titania", ImageIO.read(getClass().getResource("/planets/manen/uranus_titania.jpg")), 0.05, 75, (float) 2, false));
+        uranus.addMoon(new Moon("Oberon", ImageIO.read(getClass().getResource("/planets/manen/uranus_oberon.jpg")), 0.05, 135, (float) 2, false));
+        this.solarSystem.addPlanet(uranus);
 
-        this.solarSystem.addPlanet(new Planet("Neptune", ImageIO.read(getClass().getResource("/planets/neptunus.jfif")), 0.07, 2400, (float) 2));
+        Planet neptune = new Planet("Neptune", ImageIO.read(getClass().getResource("/planets/neptunus.jfif")),0.07, 2350, (float) 2);
+        neptune.addMoon(new Moon("Triton", ImageIO.read(getClass().getResource("/planets/manen/neptunus_triton.jpg")), 0.07, 50, (float) 2, true));
+        this.solarSystem.addPlanet(neptune);
 
+        this.solarSystem.addPlanet(new Planet("Pluto", ImageIO.read(getClass().getResource("/planets/pluto.jpg")), 0.02, 2550, (float) 1));
+
+        this.solarSystem.addPlanet(new Planet("Eris", ImageIO.read(getClass().getResource("/planets/eris.jpg")), 0.03, 3700, (float) 2));
 
         // Algemene settings
         BorderPane mainPane = new BorderPane();
+        mainPane.setStyle("-fx-background-color: black");
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         canvas.setHeight(1000);
         canvas.setWidth(1910);
@@ -78,10 +94,9 @@ public class GUI extends Application{
                 draw(g2d);
             }
         }.start();
-        // Extra: Pan event
         canvas.setOnMousePressed(e -> mousePressed(e));
         canvas.setOnMouseDragged(e -> mouseDragged(e));
-        //canvas.setOnMouseReleased(e -> mouseReleased(e));
+        canvas.setOnMouseReleased(e -> mouseReleased(e));
         stage.setScene(new Scene(mainPane));
         stage.setTitle(this.solarSystem.getName());
         stage.show();
@@ -91,9 +106,9 @@ public class GUI extends Application{
     private void draw(FXGraphics2D graphics) {
         // Algemene settings
         graphics.setTransform(new AffineTransform());
-        graphics.setBackground(Color.black);
         graphics.translate(this.canvas.getWidth()/2, this.canvas.getHeight()/2);
         graphics.clearRect((int) (-this.canvas.getWidth()/2), (int) (-this.canvas.getHeight()/2), (int) this.canvas.getWidth(), (int) this.canvas.getHeight());
+        graphics.setColor(Color.white);
         graphics.scale(zoom,-zoom);
 
         // Teken zon
@@ -129,10 +144,17 @@ public class GUI extends Application{
                 }
             }
         }
+
+        // Teken de buitenrand van het zonnenstelsel
+        graphics.scale(1,-1);
+        graphics.setFont(new Font("Arial", Font.BOLD, 90));
+        graphics.drawString("Beyond: Scattered Disk Objects (SDO)", -3500, -2000);
+        graphics.draw(new Ellipse2D.Double(-2500, -2500, 5000, 5000));
+        graphics.scale(1,-1);
     }
 
     private void update(double deltaTime) {
-        // Laat tijd lopen, en pas translaties aan
+        // Terwijl de tijd loopt, draai de planeten en manen
         double planetDecreaseAngle = 0.01;
         for (Planet planet : solarSystem.getPlanets()){
             planet.setAngle((float) (planet.getAngle() + planetDecreaseAngle));
@@ -140,8 +162,8 @@ public class GUI extends Application{
             if (planet.hasMoons()){
                 double moonDecreaseAngle = 0.1;
                 for (Moon moon : planet.getMoons()){
-                    moonDecreaseAngle -= moonDecreaseAngle/planet.getMoons().size();
-                    if (moon.getRotationClockWise()){
+                    moonDecreaseAngle -= 0.05/planet.getMoons().size();
+                    if (!moon.isRotatingCounterClockWise()){
                         moonDecreaseAngle = -moonDecreaseAngle;
                     }
                     moon.setAngle((float) (moon.getAngle() + moonDecreaseAngle));
@@ -151,38 +173,41 @@ public class GUI extends Application{
     }
 
     private void mousePressed(MouseEvent e){
+        this.mousePoint = new Point2D.Double(e.getX(), e.getY());
         // Linker muisknop: Zoom in
-        if (e.isPrimaryButtonDown()){
-            if (zoom < 2)
+        if (e.getButton() == MouseButton.PRIMARY){
+            if (zoom < 2){
                 zoom+=0.20;
+            }
         }
         // Rechtermuisknop: Zoom uit
-        else if (e.isSecondaryButtonDown()){
-            if (zoom > 0.40)
-                zoom-=0.20;
-        }
-        if (e.isMiddleButtonDown()){
-            this.mousePoint = new Point2D.Double(e.getX(), e.getY());
+        else if (e.getButton() == MouseButton.SECONDARY){
+            if (zoom > 0.40){
+                zoom -= 0.20;
+            }
         }
     }
 
     private void mouseDragged(MouseEvent e){
-        Point2D newMousePoint = new Point2D.Double(e.getX(), e.getY());
-
-        AffineTransform at = new AffineTransform();
-        at.translate(newMousePoint.getY() - mousePoint.getY(), newMousePoint.getX() - mousePoint.getX());
-        at.scale(zoom, zoom);
+        // Pan Event
+        if (e.getButton() == MouseButton.MIDDLE){
+            Point2D newMousePoint = new Point2D.Double(e.getX(), e.getY());
+            double translateX = canvas.getTranslateX();
+            double translateY = canvas.getTranslateY();
+            canvas.setTranslateX(translateX + newMousePoint.getX() - mousePoint.getX());
+            canvas.setTranslateY(translateY + newMousePoint.getY() - mousePoint.getY());
+        }
     }
 
-//    private void mouseReleased(MouseEvent e){
-//        Point2D newMousePoint = new Point2D.Double(e.getX(), e.getY());
-//
-//        AffineTransform at = new AffineTransform();
-//            at.translate(newMousePoint.getX() - mousePoint.getX(), newMousePoint.getY() - mousePoint.getY());
-//            at.scale(zoom, zoom);
-//    }
+    private void mouseReleased(MouseEvent e){
+        // Stop Pan Event
+        if (e.getButton() == MouseButton.MIDDLE){
+            this.mousePoint = null;
+        }
+    }
 
     public static void main(String[] args){
+        // Start Applicatie
         launch(GUI.class);
     }
 
