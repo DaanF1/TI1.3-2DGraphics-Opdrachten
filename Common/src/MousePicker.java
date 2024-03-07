@@ -19,9 +19,7 @@ import java.util.List;
  * Created by johan on 2017-03-08.
  */
 public class MousePicker {
-
     private Point2D mousePos = null;
-
     private Body body;
     private MotorJoint joint;
 
