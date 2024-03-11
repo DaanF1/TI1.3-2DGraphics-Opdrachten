@@ -11,6 +11,7 @@ public class Sun{
     private int y;
     private int xOffset = 0;
     private int yOffset = 0;
+
     public Sun(String sunName, BufferedImage image, int x, int y, double scale){
         this.sunName = sunName;
         this.image = scaleImage(image, scale);
@@ -38,16 +39,8 @@ public class Sun{
         return this.image;
     }
 
-    public void setX(int x){
-        this.x = x;
-    }
-
     public int getX(){
         return this.x;
-    }
-
-    public void setY(int y){
-        this.y = y;
     }
 
     public int getY(){

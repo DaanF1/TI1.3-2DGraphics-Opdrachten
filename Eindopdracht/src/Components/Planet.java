@@ -1,5 +1,8 @@
 package Components;
 
+import org.jfree.fx.FXGraphics2D;
+
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -15,6 +18,7 @@ public class Planet{
     private double xOffset = 0;
     private double yOffset = 0;
     private float fullRotation = (float) (2*Math.PI);
+    private AffineTransform planetTransform;
 
     public Planet(String planetName, BufferedImage image, double scale, int distanceToSun, float startingAngle, boolean scatteredDiskObject){
         this.moons = new ArrayList<Moon>();
@@ -41,10 +45,6 @@ public class Planet{
         return scaled;
     }
 
-    public BufferedImage getImage(){
-        return this.image;
-    }
-
     public String getName(){
         return this.planetName;
     }
@@ -61,40 +61,62 @@ public class Planet{
         return this.moons;
     }
 
-    public void setDistanceToSun(int distanceToSun){
-        this.distanceToSun = distanceToSun;
-    }
-
     public int getDistanceToSun(){
         return this.distanceToSun;
-    }
-
-    public void setAngle(float angle){
-        this.angle = angle;
     }
 
     public float getAngle(){
         return this.angle;
     }
 
-    public boolean isAScatteredDiskObject(){
-        return this.scatteredDiskObject;
-    }
-
-    public double getXOffset(){
-        return this.xOffset;
-    }
-
     public double getYOffset(){
         return this.yOffset;
     }
 
-    public void setFullRotation(float newFullRotation){
-        this.fullRotation = newFullRotation;
+    public AffineTransform getPlanetTransform(){
+        return this.planetTransform;
     }
 
-    public float getFullRotation(){
-        return this.fullRotation;
+    public void draw(FXGraphics2D graphics){
+        // Translate posities per planeet
+        this.planetTransform = new AffineTransform();
+        this.planetTransform.rotate(this.angle);
+        this.planetTransform.translate(0, this.distanceToSun);
+        this.planetTransform.rotate(-this.angle);
+
+        // Pak translatie coordinaten
+        double x1 = this.planetTransform.getTranslateX();
+        double y1 = this.planetTransform.getTranslateY();
+
+        // Centreer afbeelding (coordinaat - offset)
+        graphics.drawImage((Image) this.image, (int) ((int) x1-(this.xOffset/2)), (int) ((int) y1-(this.yOffset/2)), null);
+        //graphics.drawImage(planet.getImage(), planetTransform, null);
+    }
+
+    public void update(double planetDecreaseAngle){
+        // Update planeet angle
+        this.angle = (float) ((float) this.angle - planetDecreaseAngle);
+
+        // Als de planeet een Scattered Disk Object is, moet de baan ovaal worden (dit doe ik met een zelfgemaakte formule)
+        if (this.scatteredDiskObject){
+
+            double distanceMultiplier = 0;
+            switch (this.planetName) {
+                case "Pluto":
+                    distanceMultiplier = 1;
+                    break;
+                case "Eris":
+                    distanceMultiplier = 5;
+                    break;
+            }
+            if (this.angle%this.fullRotation < -Math.PI){
+                this.distanceToSun = ((int) (this.distanceToSun+distanceMultiplier));
+            } else if (this.angle%this.fullRotation > -Math.PI){
+                this.distanceToSun = ((int) (this.distanceToSun-distanceMultiplier));
+            } else if (this.angle%this.fullRotation == 2*Math.PI){
+                this.fullRotation = (this.fullRotation + (float) (2*Math.PI));
+            }
+        }
     }
 
 }

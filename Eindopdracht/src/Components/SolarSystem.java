@@ -6,6 +6,7 @@ public class SolarSystem{
     private String name;
     private Sun sun;
     private ArrayList<Planet> planets;
+
     public SolarSystem(String name, Sun sun){
         this.name = name;
         this.sun = sun;
