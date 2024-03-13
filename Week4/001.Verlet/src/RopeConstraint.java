@@ -3,6 +3,7 @@ import org.jfree.fx.FXGraphics2D;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class RopeConstraint implements Constraint{
 // De RopeConstraint heeft de meeste eigenschappen van de DistanceConstraint, maar dan met minder correctie
@@ -54,4 +55,15 @@ public class RopeConstraint implements Constraint{
         g2d.setColor(this.color);
         g2d.draw(new Line2D.Double(a.getPosition(), b.getPosition()));
     }
+
+    @Override
+    public ArrayList<String> getConstraintInfo(){
+        ArrayList<String> info = new ArrayList<>();
+        info.add("RopeConstraint");
+        info.add(String.valueOf(this.distance));
+        info.add(this.a.getPosition().getX() + "," + this.a.getPosition().getY());
+        info.add(this.b.getPosition().getX() + "," + this.b.getPosition().getY());
+        return info;
+    }
+
 }

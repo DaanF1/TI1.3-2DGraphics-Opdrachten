@@ -23,8 +23,10 @@ import java.awt.image.BufferedImage;
 public class GUI extends Application{
     // Controls:
     // Linkermuisknop: Zoom in
+    // Linkermuisknop + Shift: Versnel tijd
+    // Linkermuisknop + Control: Versloom tijd
     // Rechtermuisknop: Zoom uit
-    // Scrollknop: Sleep rond
+    // Scrollknop indrukken: Sleep rond
     private ResizableCanvas canvas;
     private SolarSystem solarSystem;
     private double zoom = 1;
@@ -104,6 +106,7 @@ public class GUI extends Application{
                 draw(g2d);
             }
         }.start();
+        // Events
         canvas.setOnMousePressed(e -> mousePressed(e));
         canvas.setOnMouseDragged(e -> mouseDragged(e));
         canvas.setOnMouseReleased(e -> mouseReleased(e));
@@ -159,8 +162,8 @@ public class GUI extends Application{
     }
 
     private void update(double deltaTime) {
-        // Angle om pleneten mee te roteren
-        double planetDecreaseAngle = (deltaTime/4)*speed;
+        // Angle om planeten mee te roteren
+        double planetDecreaseAngle = speed*(deltaTime/4);
 
         // Update posities van alle planeten & manen binnen het zonnenstelsel
         for (Planet planet : solarSystem.getPlanets()){
@@ -183,11 +186,21 @@ public class GUI extends Application{
         this.mousePoint = new Point2D.Double(e.getX(), e.getY());
         // Linker muisknop: Zoom in
         if (e.getButton() == MouseButton.PRIMARY){
-            if (zoom < 3.20){
-                zoom+=0.20;
-                if (zoom < 1.20){
-                    fontSize-=15;
+            if (!e.isShiftDown() && !e.isControlDown()){
+                if (zoom < 3.20){
+                    zoom+=0.20;
+                    if (zoom < 1.20){
+                        fontSize-=15;
+                    }
                 }
+            }
+            // Shift: Versnel tijd
+            if (e.isShiftDown()){
+                speed = speed * 1.1;
+            }
+            // Control: Versloom tijd
+            if (e.isControlDown()){
+                speed = speed * 0.9;
             }
         }
         // Rechtermuisknop: Zoom uit

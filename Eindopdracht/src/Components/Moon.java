@@ -64,7 +64,7 @@ public class Moon{
             moonDecreaseAngle = -moonDecreaseAngle;
         }
         // Update maan angle
-        this.angle = ((float) (this.angle + moonDecreaseAngle));
+        this.angle = (float) (this.angle + moonDecreaseAngle);
     }
 
 }

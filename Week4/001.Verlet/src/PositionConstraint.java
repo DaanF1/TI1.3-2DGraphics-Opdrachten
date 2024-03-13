@@ -1,5 +1,6 @@
 import org.jfree.fx.FXGraphics2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class PositionConstraint implements Constraint {
 
@@ -35,4 +36,16 @@ public class PositionConstraint implements Constraint {
     public void setFixedPosition(Point2D fixedPosition) {
         this.fixedPosition = fixedPosition;
     }
+
+    @Override
+    public ArrayList<String> getConstraintInfo(){
+        ArrayList<String> info = new ArrayList<>();
+        info.add("PositionConstraint");
+        if (this.particle != null){
+            info.add(this.particle.getPosition().getX() + "," + this.particle.getPosition().getY());
+            return info;
+        }
+        return null;
+    }
+
 }

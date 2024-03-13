@@ -95,9 +95,10 @@ public class Planet{
 
     public void update(double planetDecreaseAngle){
         // Update planeet angle
-        this.angle = (float) ((float) this.angle - planetDecreaseAngle);
+        this.angle = (float) (this.angle - planetDecreaseAngle);
 
         // Als de planeet een Scattered Disk Object is, moet de baan ovaal worden (dit doe ik met een zelfgemaakte formule)
+        // Dit werkt alleen niet als je de speed gaat aanpassen!
         if (this.scatteredDiskObject){
 
             double distanceMultiplier = 0;
@@ -110,9 +111,9 @@ public class Planet{
                     break;
             }
             if (this.angle%this.fullRotation < -Math.PI){
-                this.distanceToSun = ((int) (this.distanceToSun+distanceMultiplier));
+                this.distanceToSun = (int) (this.distanceToSun+distanceMultiplier);
             } else if (this.angle%this.fullRotation > -Math.PI){
-                this.distanceToSun = ((int) (this.distanceToSun-distanceMultiplier));
+                this.distanceToSun = (int) (this.distanceToSun-distanceMultiplier);
             } else if (this.angle%this.fullRotation == 2*Math.PI){
                 this.fullRotation = (this.fullRotation + (float) (2*Math.PI));
             }
