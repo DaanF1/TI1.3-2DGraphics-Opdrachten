@@ -100,7 +100,6 @@ public class Planet{
         // Als de planeet een Scattered Disk Object is, moet de baan ovaal worden (dit doe ik met een zelfgemaakte formule)
         // Dit werkt alleen niet als je de speed gaat aanpassen!
         if (this.scatteredDiskObject){
-
             double distanceMultiplier = 0;
             switch (this.planetName) {
                 case "Pluto":
@@ -110,6 +109,7 @@ public class Planet{
                     distanceMultiplier = 5;
                     break;
             }
+
             if (this.angle%this.fullRotation < -Math.PI){
                 this.distanceToSun = (int) (this.distanceToSun+distanceMultiplier);
             } else if (this.angle%this.fullRotation > -Math.PI){

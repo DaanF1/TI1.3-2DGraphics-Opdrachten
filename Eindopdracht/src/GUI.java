@@ -1,7 +1,4 @@
-import Components.Moon;
-import Components.Planet;
-import Components.SolarSystem;
-import Components.Sun;
+import Components.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -22,18 +19,20 @@ import java.awt.image.BufferedImage;
 
 public class GUI extends Application{
     // Controls:
-    // Linkermuisknop: Zoom in
+    // Linkermuisknop: Zoom in (Canvas)
     // Linkermuisknop + Shift: Versnel tijd
     // Linkermuisknop + Control: Versloom tijd
-    // Rechtermuisknop: Zoom uit
+    // Rechtermuisknop: Zoom uit (Canvas)
     // Scrollknop indrukken: Sleep rond
+    // Scrollen: Zoom in / uit (Camera)
     private ResizableCanvas canvas;
     private SolarSystem solarSystem;
-    private double zoom = 1;
-    private double speed = 1;
-    private int fontSize = 20;
-    private Point2D mousePoint;
     private boolean linesSelected = false;
+    private double speed = 1;
+    private double zoom = 0.2;
+    private int fontSize = 80;
+    private Point2D mousePoint;
+    private Camera camera;
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -84,7 +83,9 @@ public class GUI extends Application{
         canvas.setHeight(1000);
         canvas.setWidth(1910);
 
-        // Add planet lines button
+        camera = new Camera(canvas);
+
+        // Toon informatie checkbox
         javafx.scene.control.CheckBox showInfo = new CheckBox("Show information");
         showInfo.setStyle("-fx-background-color: white");
         showInfo.setOnAction(e -> {
@@ -110,6 +111,8 @@ public class GUI extends Application{
         canvas.setOnMousePressed(e -> mousePressed(e));
         canvas.setOnMouseDragged(e -> mouseDragged(e));
         canvas.setOnMouseReleased(e -> mouseReleased(e));
+        // Extra camera zoom
+        canvas.setOnScroll(e -> camera.handleScroll(e));
         stage.setScene(new Scene(mainPane));
         stage.setTitle(this.solarSystem.getName());
         stage.show();
@@ -183,9 +186,12 @@ public class GUI extends Application{
     }
 
     private void mousePressed(MouseEvent e){
-        this.mousePoint = new Point2D.Double(e.getX(), e.getY());
+        // Middel muisknop: Pan
+        if (e.getButton() == MouseButton.MIDDLE){
+            this.mousePoint = new Point2D.Double(e.getX(), e.getY());
+        }
         // Linker muisknop: Zoom in
-        if (e.getButton() == MouseButton.PRIMARY){
+        else if (e.getButton() == MouseButton.PRIMARY){
             if (!e.isShiftDown() && !e.isControlDown()){
                 if (zoom < 3.20){
                     zoom+=0.20;
