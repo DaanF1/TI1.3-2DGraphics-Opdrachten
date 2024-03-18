@@ -203,8 +203,9 @@ public class AngryBirds extends Application {
 
     private void mouseReleased(MouseEvent e){
         if (shootBird){
+            int speedFactor = 3;
             if (this.oldMousePoint != null && this.mousePoint != null){
-                this.birdBody.applyForce(new Vector2((oldMousePoint.getX() - mousePoint.getX()) * 3, (oldMousePoint.getX() - mousePoint.getX())));
+                this.birdBody.applyForce(new Vector2((oldMousePoint.getX() - mousePoint.getX()) * speedFactor, (oldMousePoint.getX() - mousePoint.getX()) * ((double) speedFactor /2)));
             }
             shootBird = false;
             mousePicker = new MousePicker(canvas);
