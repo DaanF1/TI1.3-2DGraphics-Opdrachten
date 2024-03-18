@@ -2,12 +2,15 @@
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
@@ -25,9 +28,13 @@ public class AngryBirds extends Application {
     private World world;
     private MousePicker mousePicker;
     private Camera camera;
+    private Body birdBody;
     private boolean debugSelected = false;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private BufferedImage backgroundImage;
+    private Point2D mousePoint;
+    private Point2D oldMousePoint;
+    private boolean shootBird = true;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -47,7 +54,6 @@ public class AngryBirds extends Application {
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
 
         camera = new Camera(canvas, g -> draw(g), g2d);
-        mousePicker = new MousePicker(canvas);
 
         new AnimationTimer() {
             long last = -1;
@@ -63,6 +69,10 @@ public class AngryBirds extends Application {
             }
         }.start();
 
+        canvas.setOnMousePressed(e -> mousePressed(e));
+        canvas.setOnMouseDragged(e -> mouseDragged(e));
+        canvas.setOnMouseReleased(e -> mouseReleased(e));
+
         stage.setScene(new Scene(mainPane, 1920, 1080));
         stage.setTitle("Angry Birds");
         stage.show();
@@ -77,6 +87,7 @@ public class AngryBirds extends Application {
         // Body's
         Body ground = new Body();
         BodyFixture groundFixture = new BodyFixture(Geometry.createRectangle(27, 2));
+        groundFixture.setFriction(100);
         ground.addFixture(groundFixture);
         Vector2 groundVector = new Vector2(0, -3);
         ground.getTransform().setTranslation(groundVector);
@@ -88,6 +99,7 @@ public class AngryBirds extends Application {
         Body red = new Body();
         BodyFixture redFixture = new BodyFixture(Geometry.createCircle(0.2));
         redFixture.setRestitution(0.5);
+        redFixture.setDensity(5);
         red.addFixture(redFixture);
         Vector2 redVector = new Vector2(-7, 0);
         red.getTransform().setTranslation(redVector);
@@ -95,6 +107,7 @@ public class AngryBirds extends Application {
         this.world.addBody(red);
         GameObject redObject = new GameObject("/birds/red.png", red, redVector.add(-70, -65), 0.05);
         this.gameObjects.add(redObject);
+        this.birdBody = red;
 
         Body leftWall = new Body();
         BodyFixture leftWallFixture = new BodyFixture(Geometry.createRectangle(2.5, 5.5));
@@ -123,6 +136,30 @@ public class AngryBirds extends Application {
         this.world.addBody(catapult);
         GameObject catapultObject = new GameObject("/map/catapult.png", catapult, catapultVector, 0.4);
         this.gameObjects.add(catapultObject);
+
+        Body catapultBock = new Body();
+        BodyFixture catapultBlockFixture = new BodyFixture(Geometry.createRectangle(0.10, 0.1));
+        catapultBlockFixture.setRestitution(0.5);
+        catapultBock.addFixture(catapultBlockFixture);
+        catapultBock.getTransform().setTranslation(catapultVector.add(-0.10, 0.3));
+        catapultBock.setMass(MassType.INFINITE);
+        this.world.addBody(catapultBock);
+
+        // Genereer blokken
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 5; j++){
+                Body block = new Body();
+                BodyFixture blockFixture = new BodyFixture(Geometry.createRectangle(0.5,0.5));
+                blockFixture.setRestitution(0.25);
+                block.addFixture(blockFixture);
+                Vector2 blockVector = new Vector2(5+(0.5*i), -1.75+(0.5*j));
+                block.getTransform().setTranslation(blockVector);
+                block.setMass(MassType.NORMAL);
+                this.world.addBody(block);
+                GameObject blockObject = new GameObject("/block.png", block, blockVector.add(-5,2), 1.2);
+                this.gameObjects.add(blockObject);
+            }
+        }
     }
 
     public void draw(FXGraphics2D graphics) {
@@ -150,8 +187,28 @@ public class AngryBirds extends Application {
     }
 
     public void update(double deltaTime) {
-        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
+        if (!shootBird){
+            mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
+        }
         world.update(deltaTime);
+    }
+
+    private void mousePressed(MouseEvent e){
+        this.oldMousePoint = new Point2D.Double(e.getX(), e.getY());
+    }
+
+    private void mouseDragged(MouseEvent e){
+        this.mousePoint = new Point2D.Double(e.getX(), e.getY());
+    }
+
+    private void mouseReleased(MouseEvent e){
+        if (shootBird){
+            if (this.oldMousePoint != null && this.mousePoint != null){
+                this.birdBody.applyForce(new Vector2((oldMousePoint.getX() - mousePoint.getX()) * 3, (oldMousePoint.getX() - mousePoint.getX())));
+            }
+            shootBird = false;
+            mousePicker = new MousePicker(canvas);
+        }
     }
 
     public static void main(String[] args) {
