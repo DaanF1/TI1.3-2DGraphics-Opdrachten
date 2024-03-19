@@ -34,7 +34,7 @@ public class AngryBirds extends Application {
     private BufferedImage backgroundImage;
     private Point2D mousePoint;
     private Point2D oldMousePoint;
-    private boolean shootBird;
+    private boolean shootBird = true;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -82,6 +82,33 @@ public class AngryBirds extends Application {
     public void reset(){
         gameObjects.clear();
         init();
+    }
+
+    public void newBird(){
+        Body red = new Body();
+        BodyFixture redFixture = new BodyFixture(Geometry.createCircle(0.2));
+        redFixture.setRestitution(0.5);
+        redFixture.setDensity(5);
+        red.addFixture(redFixture);
+        Vector2 redVector = new Vector2(-7, -1);
+        red.getTransform().setTranslation(redVector);
+        red.setMass(MassType.NORMAL);
+        this.world.addBody(red);
+        GameObject redObject = new GameObject("/birds/red.png", red, redVector.add(-70, -65), 0.05);
+        this.gameObjects.add(redObject);
+        this.birdBody = red;
+
+        // Teken catapult opnieuw
+        Body catapult = new Body();
+        Vector2 catapultVector = new Vector2(-6.9, -1.5);
+        catapult.getTransform().setTranslation(catapultVector);
+        catapult.setMass(MassType.INFINITE);
+        this.world.addBody(catapult);
+        GameObject catapultObject = new GameObject("/map/catapult.png", catapult, catapultVector, 0.4);
+        this.gameObjects.remove(catapultObject);
+        this.gameObjects.add(catapultObject);
+
+        shootBird = true;
     }
 
     public void init() {
@@ -154,18 +181,19 @@ public class AngryBirds extends Application {
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 5; j++){
                 Body block = new Body();
-                BodyFixture blockFixture = new BodyFixture(Geometry.createRectangle(0.5,0.5));
+                BodyFixture blockFixture = new BodyFixture(Geometry.createRectangle(0.5, 0.5));
                 blockFixture.setRestitution(0.25);
                 blockFixture.setDensity(2.5);
                 block.addFixture(blockFixture);
-                Vector2 blockVector = new Vector2(5+(0.5*i), -1.75+(0.5*j));
+                Vector2 blockVector = new Vector2(5 + (0.5 * i), -1.75 + (0.5 * j));
                 block.getTransform().setTranslation(blockVector);
                 block.setMass(MassType.NORMAL);
                 this.world.addBody(block);
-                GameObject blockObject = new GameObject("/block.png", block, blockVector.add(-5,0), 1.2);
+                GameObject blockObject = new GameObject("/block.png", block, blockVector.add(-5, 0), 1.2);
                 this.gameObjects.add(blockObject);
             }
         }
+
         shootBird = true;
     }
 
@@ -202,7 +230,13 @@ public class AngryBirds extends Application {
 
     private void mousePressed(MouseEvent e){
         this.oldMousePoint = new Point2D.Double(e.getX(), e.getY());
-        if (e.getButton() == MouseButton.MIDDLE){
+        if (e.getButton() == MouseButton.SECONDARY){
+            // Nieuwe bird
+            this.oldMousePoint = null;
+            newBird();
+        }
+        else if (e.getButton() == MouseButton.MIDDLE){
+            // Reset
             this.oldMousePoint = null;
             reset();
         }
