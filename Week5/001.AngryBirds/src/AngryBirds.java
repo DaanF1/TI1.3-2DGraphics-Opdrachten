@@ -23,7 +23,10 @@ import org.jfree.fx.ResizableCanvas;
 import javax.imageio.ImageIO;
 
 public class AngryBirds extends Application {
-
+    // Controls:
+    // Scroll: Zoom in / uit
+    // Middel muisknop: Reset game
+    // Rechter muisknop: Spawn nieuwe volgel
     private ResizableCanvas canvas;
     private World world;
     private MousePicker mousePicker;
