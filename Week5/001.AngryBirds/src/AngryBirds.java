@@ -89,6 +89,7 @@ public class AngryBirds extends Application {
 
     public void newBird(){
         Body red = new Body();
+        red.setBullet(true);
         BodyFixture redFixture = new BodyFixture(Geometry.createCircle(0.2));
         redFixture.setRestitution(0.5);
         redFixture.setDensity(5);
