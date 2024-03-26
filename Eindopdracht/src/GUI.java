@@ -20,8 +20,8 @@ import java.awt.image.BufferedImage;
 public class GUI extends Application{
     // Controls:
     // Linkermuisknop: Zoom in (Canvas)
-    // Linkermuisknop + Shift: Versnel tijd
-    // Linkermuisknop + Control: Versloom tijd
+    // Linkermuisknop + Shift: Versnel tijd (Kan problemen veroorzaken)
+    // Linkermuisknop + Control: Versloom tijd (Kan problemen veroorzaken)
     // Rechtermuisknop: Zoom uit (Canvas)
     // Scrollknop indrukken: Sleep rond
     // Scrollen: Zoom in / uit (Camera)
